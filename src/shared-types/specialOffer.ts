@@ -1,0 +1,100 @@
+import type { Casino } from './casino'
+import type { ResolvedSeo } from './seo'
+
+// Fields match SpecialOfferResource.php. A Special Offer belongs to a Casino.
+export interface SpecialOffer {
+  id: number
+  casino_id: number
+  casino?: Casino
+  /**
+   * Which section of the Bonus area this offer appears in. Null is valid —
+   * an uncategorised offer still shows on the Special Offers page, it just
+   * has no section on the home page.
+   *
+   * SpecialOfferResource has always returned this; the type simply never declared
+   * it, so the admin's edit form had no way to know the field existed and
+   * quietly dropped it on every load — which then posted null back and
+   * detached the offer on the next save.
+   */
+  bonus_category_id: number | null
+  /**
+   * The bonus type's slug — "special-offers", "free-spins", …
+   *
+   * The front end decides which bonuses carry a Claim call to action from this,
+   * never from the id: ids differ between environments, the slug does not.
+   * Null when the offer is filed under no type.
+   */
+  bonus_category_slug: string | null
+  /**
+   * The type's name, as an editor wrote it — "Free Spins", "Tournament".
+   *
+   * The label a reader sees. Never derived from the slug: a renamed type would
+   * keep its old slug (it is in the URL and in every cache key) and the derived
+   * label would quietly go stale.
+   */
+  bonus_category_name: string | null
+  title: string
+  slug: string
+  image_path: string | null
+  banner_image: string | null
+  bonuses: string | null
+  affiliate_url: string | null
+  /** This site's own text where it has one, else the default (SiteContentResolver). */
+  description: string | null
+  /**
+   * Finished page meta. On the public API: this site's value, else the
+   * default, else "{title} – {casino}" and a description snippet — never
+   * empty. In the admin: the raw default values the edit form saves.
+   */
+  meta_title: string | null
+  meta_description: string | null
+  rating: number
+  sort_order: number
+  active: boolean
+  created_at: string
+  /** The later of the offer's change and this site's override. */
+  updated_at: string
+  /** Server-resolved SEO: stored meta (site's, else default), else the site pattern. */
+  seo?: ResolvedSeo
+  /**
+   * Whether this offer's page may be indexed on THIS site: false when the
+   * offer is noindexed, the site set Noindex, or the site hides pages without
+   * its own text (SiteContentResolver). The page's robots tag and the sitemap
+   * both read it, so they cannot disagree.
+   *
+   * NOT the same as `active`: an inactive offer is hidden for a different
+   * reason and its page serves the stricter `index: false, follow: false`.
+   */
+  is_indexable: boolean
+  /** Structured bonus terms. Additive — `bonuses` stays the scannable headline. */
+  terms?: SpecialOfferTerms
+}
+
+/**
+ * The terms a player needs before depositing.
+ *
+ * Every field is nullable — an offer with none renders exactly as it always did.
+ *
+ * The money fields are STRINGS, not numbers: a decimal carries no currency and
+ * these offers run in EUR, USD and crypto, so "20" beside a bonus is either
+ * meaningless or read as the wrong currency. Operators also state ranges
+ * ("€20, €50 by wire"), which a number cannot hold.
+ */
+export interface SpecialOfferTerms {
+  /** e.g. "35x (D+B)" — the multiplier and its base are one statement. */
+  wagering_requirement: string | null
+  min_deposit: string | null
+  max_cashout: string | null
+  bonus_code: string | null
+  /** The operator's own full terms. Rendered beside the CTA, never as fine print. */
+  terms_url: string | null
+  /** ISO date (YYYY-MM-DD), or null when the offer has no stated end. */
+  expires_at: string | null
+  /**
+   * Resolved server-side so every site agrees on what "expired" means instead of
+   * each comparing dates in its own timezone. An expired offer is already
+   * excluded from every listing; this flag is for the detail page, which still
+   * resolves by direct link and must render it as not claimable.
+   */
+  expired: boolean
+}

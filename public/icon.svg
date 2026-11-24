@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48">
+  <!-- StarSpinly mark: a four-pointed star inside a ringed dial, with the
+       cardinal ticks lit gold, the diagonals left dim, and a comet-orange
+       spark breaking the circle at the top right. A sextant and a star chart
+       at once, which is the name.
+
+       The first <rect fill> is what app/apple-icon.tsx reads as the 180x180
+       background plate — the page ground itself, so iOS composites the mark
+       onto its own sky rather than onto black. It is drawn OUTSIDE the dial's
+       geometry (the full viewBox), so at favicon size the dial still reads
+       edge to edge.
+
+       src/app/favicon.ico is the same artwork rasterised at 16/32/48 — see
+       scripts/make-favicon.py. -->
+  <rect width="48" height="48" rx="11" fill="#0a0d22"/>
+  <circle cx="24" cy="24" r="22" fill="#171c42" stroke="#ffd86b" stroke-width="1.5"/>
+  <g stroke="#ffd86b" stroke-width="3" stroke-linecap="round" opacity=".9">
+    <path d="M24 6.5v2.5M24 39v2.5M6.5 24H9M39 24h2.5"/>
+  </g>
+  <g stroke="#3a4385" stroke-width="2.5" stroke-linecap="round">
+    <path d="M11.6 11.6l1.8 1.8M34.6 34.6l1.8 1.8M11.6 36.4l1.8-1.8M34.6 13.4l1.8-1.8"/>
+  </g>
+  <path d="M24 12.5c1.2 6.6 4.9 10.3 11.5 11.5-6.6 1.2-10.3 4.9-11.5 11.5-1.2-6.6-4.9-10.3-11.5-11.5 6.6-1.2 10.3-4.9 11.5-11.5z" fill="#ffd86b"/>
+  <circle cx="24" cy="24" r="2.2" fill="#0a0d22"/>
+  <path d="M36 6.5c.4 2.2 1.5 3.3 3.7 3.7-2.2.4-3.3 1.5-3.7 3.7-.4-2.2-1.5-3.3-3.7-3.7 2.2-.4 3.3-1.5 3.7-3.7z" fill="#ff6b3d"/>
+</svg>
